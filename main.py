@@ -17,36 +17,69 @@ class Game:
         pg.display.set_caption("Enigma")
         self.clock = pg.time.Clock()
         self.running = True
+        self.background = pg.image.load(path.join(img, "gum.gif"))
+        self.background_rect = self.background.get_rect()
     def new(self):
         self.all_sprites = pg.sprite.Group()
-        self.player = Player()
+        self.platforms = pg.sprite. Group()
+        # Player 1
+        self.player = Player(self)
         self.all_sprites.add(self.player)
+        # Player 2
+        self.player_2 = Player(self)
+        self.player_2.image.fill(WHITE)
+        self.player_2.up = pg.K_w
+        self.player_2.left = pg.K_a
+        self.player_2.right = pg.K_d
+        self.all_sprites.add(self.player_2)
+        # Platforms
+        for plat in PLAT_LIST:
+            p = Platform(*plat)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
         self.run()
         #Create new player
         pass
     def run(self):
         self.playing = True
         #Game loop
-        while self.playing:
+        while self.playing: 
             self.clock.tick(FPS)
             self.events()
             self.update()
             self.draw()
         pass
     def update(self):
+        #Collision code
         self.all_sprites.update()
+        hits_1 = pg.sprite.spritecollide(self.player, self.platforms, False)
+        hits_2 = pg.sprite.spritecollide(self.player_2, self.platforms, False)
+        if hits_1:
+            self.player.pos.y = hits_1[0].rect.top + 1
+            self.player.vel.y = 0
+        if hits_2:
+            self.player_2.pos.y = hits_2[0].rect.top + 1
+            self.player_2.vel.y = 0
+        if self.player.rect.bottom > HEIGHT:
+            self.playing = False
 
+        if self.player.vel.y > 0:
+            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
         #Update game
-        pass
     def events(self):
-        #Lisening for events
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
                 self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == self.player.up:
+                    self.player.jump()
+                if event.key == self.player_2.up:
+                    self.player_2.jump()
     def draw(self):
         self.screen.fill(BLACK)
+        self.screen.blit(self.background, self.background_rect)
         self.all_sprites.draw(self.screen)
         #Double Buffer
         pg.display.flip()
