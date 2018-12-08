@@ -54,17 +54,18 @@ class Game:
         self.all_sprites.update()
         hits_1 = pg.sprite.spritecollide(self.player, self.platforms, False)
         hits_2 = pg.sprite.spritecollide(self.player_2, self.platforms, False)
-        if hits_1:
+        if hits_1 and self.player.vel.y >= 0:
             self.player.pos.y = hits_1[0].rect.top + 1
             self.player.vel.y = 0
-        if hits_2:
-            self.player_2.pos.y = hits_2[0].rect.top + 1
-            self.player_2.vel.y = 0
         if self.player.rect.bottom > HEIGHT:
             self.playing = False
 
-        if self.player.vel.y > 0:
-            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+        if hits_2 and self.player_2.vel.y >= 0:
+            self.player_2.pos.y = hits_2[0].rect.top + 1
+            self.player_2.vel.y = 0
+        if self.player_2.rect.bottom > HEIGHT:
+            self.playing = False
+
         #Update game
     def events(self):
         for event in pg.event.get():

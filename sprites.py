@@ -55,8 +55,9 @@ class Player(pg.sprite.Sprite):
 class Platform(Sprite):
     def __init__(self, x, y, w, h):
         pg.sprite.Sprite.__init__(self)
+        self.plat_img = pg.image.load(path.join(img, "shromp.gif"))
         self.image = pg.Surface((w, h))
-        self.image.fill(REDDISH)
+        self.image = self.plat_img
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
