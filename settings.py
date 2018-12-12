@@ -1,4 +1,4 @@
-TITLE = "Enigma" 
+TITLE = "Epic Tag" 
 # Screen Dimensions 
 WIDTH = 1370 
 HEIGHT = 840 
